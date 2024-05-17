@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Desafio MobSolution</title>
+    <h:outputStylesheet library="primefaces-saga" name="theme.css"/>
+</h:head>
+<h:body style="margin-left:50px; margin-right: 50px;">
+
+    <div style="display: ruby;">
+        <h1>EVENTOS</h1>
+        <p:commandButton style="margin-left: 20px; background-color: green; border-color: green;"
+                         value="Cadastrar Novo"
+                         actionListener="#{eventBean.prepareNewEvent()}"
+                         update=":eventDetailsForm"
+                         oncomplete="PF('eventDetailsDialog').show()" />
+    </div>
+
+    <!-- Campo de pesquisa dos eventos -->
+    <h:form id="searchEvents">
+        <p:panelGrid columns="7" style="width: 70%; margin: 1% 15% 2% 15%;" columnClasses="label, value">
+            <f:facet name="header">Filtros</f:facet>
+
+            <h:outputLabel for="searchName" value="Nome:" style="font-weight: bold;"/>
+            <p:inputText id="searchName" value="#{eventBean.searchEvent.name}" />
+
+            <h:outputLabel for="searchStartDate" value="Data Inicial:" style="font-weight: bold;"/>
+            <p:calendar id="searchStartDate" value="#{eventBean.searchEvent.startDate}" />
+
+            <h:outputLabel for="searchEndDate" value="Data Final:" style="font-weight: bold;"/>
+            <p:calendar id="searchEndDate" value="#{eventBean.searchEvent.endDate}" />
+
+            <p:commandButton value="Pesquisar" actionListener="#{eventBean.search()}" update=":eventTableForm:eventTable"/>
+        </p:panelGrid>
+
+
+    </h:form>
+
+    <!-- Datatable eventos -->
+    <h:form id="eventTableForm">
+        <p:dataTable id="eventTable" var="event" value="#{eventBean.events}" style="width: 90%; margin: 0 5% 5% 5%;">
+
+            <p:column headerText="Nome">
+                <h:outputText value="#{event.name}" />
+            </p:column>
+
+            <p:column headerText="Data Início">
+                <h:outputText value="#{event.startDate}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Data Fim">
+                <h:outputText value="#{event.endDate}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Duração">
+                <h:outputText value="#{eventBean.formatEventDuration(event)}" />
+            </p:column>
+
+            <p:column headerText="Editar">
+                <p:commandButton icon="pi pi-pencil"
+                                 update=":eventDetailsForm"
+                                 actionListener="#{eventBean.prepareSelectedEvent(event, 'details')}"
+                                 oncomplete="PF('eventDetailsDialog').show()" />
+            </p:column>
+
+            <p:column headerText="Excluir">
+                <p:commandButton icon="pi pi-trash"
+                                 style="background-color: red; border: red;"
+                                 oncomplete="PF('deleteEventConfirmation').show();"
+                                 actionListener="#{eventBean.prepareSelectedEvent(event, '')}" />
+            </p:column>
+
+        </p:dataTable>
+    </h:form>
+
+    <!-- Modal para excluir evento -->
+    <p:confirmDialog id="confirmDeleteEventDialog" header="Confirmação" severity="alert" widgetVar="deleteEventConfirmation">
+        <p:outputLabel value="Tem certeza que deseja excluir esse evento?" />
+        <br /><br />
+        <p:commandButton value="Sim" actionListener="#{eventBean.deleteEvent()}" update=":eventTableForm:eventTable :growl" oncomplete="PF('deleteEventConfirmation').hide();" />
+        <p:commandButton value="Não" onclick="PF('deleteEventConfirmation').hide();" type="button" />
+    </p:confirmDialog>
+
+    <!-- Modal para excluir participante -->
+    <p:confirmDialog id="confirmDeleteParticipantDialog" header="Confirmação" severity="alert" widgetVar="deleteParticipantConfirmation">
+        <p:outputLabel value="Tem certeza que deseja excluir esse participante?" />
+        <br /><br />
+        <p:commandButton value="Sim" actionListener="#{eventBean.deleteParticipant()}" update=":eventDetailsForm :growl" oncomplete="PF('deleteParticipantConfirmation').hide();" />
+        <p:commandButton value="Não" onclick="PF('deleteParticipantConfirmation').hide();" type="button" />
+    </p:confirmDialog>
+
+    <!-- Modal de detalhes do evento -->
+    <p:dialog header="Detalhes do Evento" widgetVar="eventDetailsDialog" modal="true" resizable="false" width="1100" height="700">
+        <p:ajax event="close" update="growl eventTableForm" listener="#{eventBean.closeModalEventDetailsDialog()}" />
+        <h:form id="eventDetailsForm">
+            <p:tabView id="eventDetailsTabView" style="text-align: center;">
+
+                <!-- Primeira aba: Cadastro e Detalhes do Evento -->
+                <p:tab title="Dados Evento" id="eventDetails">
+                    <div style="display: inline-block; text-align: left; margin-top: 5%">
+                        <h:panelGrid rows="3">
+                            <h:outputLabel for="eventName" value="Nome do Evento:" />
+                            <p:inputText id="eventName"
+                                         value="#{eventBean.selectedEvent.name}"
+                                         size="60"
+                                         required="true"
+                                         requiredMessage="Nome do evento é obrigatório." />
+                            <h:message for="eventName" style="color: red;"/>
+
+                            <h:outputLabel for="eventStartDate" value="Data de Início:" />
+                            <p:calendar id="eventStartDate"
+                                        value="#{eventBean.selectedEvent.startDate}"
+                                        size="60"
+                                        required="true"
+                                        showOn="button"
+                                        readonlyInput="true"
+                                        requiredMessage="Data de início do evento é obrigatória." />
+                            <h:message for="eventStartDate" style="color: red;"/>
+
+                            <h:outputLabel for="eventEndDate" value="Data de Fim:" />
+                            <p:calendar id="eventEndDate"
+                                        value="#{eventBean.selectedEvent.endDate}"
+                                        size="60"
+                                        required="true"
+                                        showOn="button"
+                                        readonlyInput="true"
+                                        requiredMessage="Data de fim do evento é obrigatória." />
+                            <h:message for="eventEndDate" style="color: red;"/>
+                        </h:panelGrid>
+
+                        <p:commandButton value="Salvar"
+                                         style="margin-top: 5%"
+                                         actionListener="#{eventBean.saveEvent()}"
+                                         update=":eventTableForm:eventTable eventDetailsForm :growl" />
+                    </div>
+                </p:tab>
+
+                <!-- Segunda aba: Participantes -->
+                <p:tab title="Participantes" id="participants" rendered="#{eventBean.showParticipantsTab}">
+                    <p:commandButton style="margin-left: 20px; background-color: green; border-color: green;"
+                                     value="Adicionar Participante"
+                                     actionListener="#{eventBean.loadModalParticipant()}"
+                                     oncomplete="PF('saveParticipantDialog').show()"
+                                     update=":saveParticipantForm" />
+
+                    <p:dataTable id="participantTable" value="#{eventBean.participantsEvent}" var="participant" style="margin-top: 1rem; text-align: center;">
+                        <p:column headerText="Nome" style="text-align: center;">
+                            <h:outputText value="#{participant.name}" />
+                        </p:column>
+
+                        <p:column headerText="CPF" style="text-align: center;">
+                            <h:outputText value="#{participant.cpf}" />
+                        </p:column>
+
+                        <p:column headerText="E-mail" style="text-align: center;">
+                            <h:outputText value="#{participant.email}" />
+                        </p:column>
+
+                        <p:column headerText="% Participação" style="text-align: center;">
+                            <h:outputText value="#{eventBean.calculateParticipationEvent(participant)}" />
+                        </p:column>
+
+                        <p:column headerText="Editar" style="text-align: center;">
+                            <p:commandButton icon="pi pi-pencil"
+                                             oncomplete="PF('participantDetailsDialog').show()"
+                                             update=":detailsParticipantForm"
+                                             actionListener="#{eventBean.prepareSelectedParticipant(participant, 'details')}" />
+                        </p:column>
+
+                        <p:column headerText="Excluir" style="text-align: center;">
+                            <p:commandButton icon="pi pi-trash"
+                                             style="background-color: red; border: red;"
+                                             oncomplete="PF('deleteParticipantConfirmation').show();"
+                                             actionListener="#{eventBean.prepareSelectedParticipant(participant, '')}" />
+                        </p:column>
+
+                        <p:column headerText="Adc. Presença" style="text-align: center;">
+                            <p:commandButton icon="pi pi-check"
+                                             style="border-color: green; background-color: green;"
+                                             oncomplete="PF('addModalParticipantPresence').show()"
+                                             update=":addPresenceForm"
+                                             actionListener="#{eventBean.prepareSelectedParticipant(participant, 'presence')}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
+        </h:form>
+    </p:dialog>
+
+
+    <!-- Modal para adicionar presença do participante -->
+    <p:dialog header="Adicionar Presença" widgetVar="addModalParticipantPresence" modal="true" resizable="false" width="550" height="260">
+        <h:form id="addPresenceForm">
+
+            <h:panelGrid rows="2">
+                <h:outputText style="font-weight: 600; font-size: 20px;" value="Nome: #{eventBean.selectedParticipant.name}"/>
+                <h:outputText style="font-weight: 600; font-size: 20px;" value="CPF: #{eventBean.selectedParticipant.cpf}"/>
+                <h:panelGrid rows="3" style="margin-top: 20px;">
+                    <h:outputLabel for="newPresenceDate" value="Data: *" />
+                    <p:calendar id="newPresenceDate"
+                                value="#{eventBean.newPresence.date}"
+                                mindate="#{eventBean.selectedEvent.startDate}"
+                                maxdate="#{eventBean.selectedEvent.endDate}"
+                                size="50"
+                                required="true"
+                                showOn="button"
+                                readonlyInput="true"
+                                requiredMessage="Data da presença é obrigatória." />
+                    <h:message for="newPresenceDate" style="color: red;"/>
+                </h:panelGrid>
+            </h:panelGrid>
+
+            <p:commandButton value="Salvar"
+                             style="margin-top: 5%"
+                             action="#{eventBean.savePresenceParticipantEvent()}"
+                             update=":addPresenceForm :eventDetailsForm :growl"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('addModalParticipantPresence').hide(); }" />
+        </h:form>
+    </p:dialog>
+
+
+
+    <!-- Modal de detalhes do participante -->
+    <p:dialog header="Detalhes do Participante" widgetVar="participantDetailsDialog" modal="true" resizable="false" width="600" height="400">
+        <h:form id="detailsParticipantForm">
+
+            <h:panelGrid rows="3">
+                <h:outputLabel for="editParticipantName" value="Nome:" />
+                <p:inputText id="editParticipantName" value="#{eventBean.selectedParticipant.name}" size="50" required="true" requiredMessage="Nome do participante é obrigatório." />
+                <h:message for="editParticipantName" style="color: red;"/>
+
+                <h:outputLabel for="editParticipantCpf" value="CPF:" />
+                <p:inputMask id="editParticipantCpf" value="#{eventBean.selectedParticipant.cpf}" mask="999.999.999-99" size="50" required="true" requiredMessage="CPF do participante é obrigatório." />
+                <h:message for="editParticipantCpf" style="color: red;"/>
+
+                <h:outputLabel for="editParticipantEmail" value="E-mail:" />
+                <p:inputText id="editParticipantEmail" value="#{eventBean.selectedParticipant.email}" size="50" required="true" requiredMessage="E-mail do participante é obrigatório." />
+                <h:message for="editParticipantEmail" style="color: red;"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Salvar"
+                             style="margin-top: 5%"
+                             action="#{eventBean.saveEditedParticipant()}"
+                             update=":eventDetailsForm detailsParticipantForm :growl"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('participantDetailsDialog').hide(); }" />
+        </h:form>
+    </p:dialog>
+
+    <!-- Modal para salvar participante -->
+    <p:dialog header="Cadastro Participante" widgetVar="saveParticipantDialog" modal="true" resizable="false" width="600" height="400">
+        <h:form id="saveParticipantForm">
+
+            <h:panelGrid rows="2">
+                <h:outputLabel for="saveParticipantName" value="Nome: *" />
+                <p:inputText id="saveParticipantName" value="#{eventBean.newParticipant.name}" size="50" required="true" requiredMessage="Nome do participante é obrigatório." />
+                <h:message for="saveParticipantName" style="color: red;"/>
+
+                <h:outputLabel for="saveParticipantCpf" value="CPF: *" />
+                <p:inputMask id="saveParticipantCpf" value="#{eventBean.newParticipant.cpf}" mask="999.999.999-99" size="50" required="true" requiredMessage="CPF do participante é obrigatório." />
+                <h:message for="saveParticipantCpf" style="color: red;"/>
+
+                <h:outputLabel for="saveParticipantEmail" value="E-mail: *" />
+                <p:inputText id="saveParticipantEmail" value="#{eventBean.newParticipant.email}" size="50" required="true" requiredMessage="E-mail do participante é obrigatório." />
+                <h:message for="saveParticipantEmail" style="color: red;"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Salvar"
+                             style="margin-top: 5%"
+                             action="#{eventBean.saveNewParticipant()}"
+                             update=":eventDetailsForm saveParticipantForm :growl"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('saveParticipantDialog').hide(); }" />
+        </h:form>
+    </p:dialog>
+
+    <!-- Modal de mensagens do servidor -->
+    <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
+
+    <p:commandButton id="hiddenButton" style="display:none;" action="#{eventBean.init()}" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("hiddenButton").click();
+        });
+    </script>
+</h:body>
+</html>
+

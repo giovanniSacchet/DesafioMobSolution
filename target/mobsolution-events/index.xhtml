@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Minha Página</title>
+    <h:outputStylesheet library="primefaces-saga" name="theme.css"/>
+</h:head>
+<h:body style="margin-left:50px">
+    <h:form>
+        <div class="card">
+            <p:dataTable var="event" value="#{eventBean.events}">
+
+                <p:column headerText="Nome">
+                    <h:outputText value="#{event.name}"/>
+                </p:column>
+
+                <p:column headerText="Data Início">
+                    <h:outputText value="#{event.startDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Data Fim">
+                    <h:outputText value="#{event.endDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Duração">
+                    <h:outputText value="#{eventBean.calculateDurationEvent(event)}"/>
+                </p:column>
+
+                <p:column headerText="Ações">
+                    <p:commandButton icon="pi pi-pencil" oncomplete="PF('editEventDialog').show()" update="../java/br/com/mobsolution/events/web/editForm" actionListener="#{eventBean.prepareEditEvent(event)}" title="Editar" ajax="true"/>
+                    <p:commandButton icon="pi pi-trash" actionListener="#{eventBean.deleteEvent(event)}" title="Excluir" ajax="false"/>
+                </p:column>
+
+            </p:dataTable>
+        </div>
+
+        <!-- Modal de edição -->
+        <p:dialog header="Editar Evento" widgetVar="editEventDialog" modal="true" resizable="false" showEffect="fade" hideEffect="fade" appendToBody="true">
+            <h:form id="editForm" rendered="#{not empty eventBean.selectedEvent}">
+                <!-- Campos de edição do evento -->
+                <p:inputText value="#{eventBean.selectedEvent.name}" label="Nome"/>
+                <p:calendar value="#{eventBean.selectedEvent.startDate}" label="Data Início"/>
+                <p:calendar value="#{eventBean.selectedEvent.endDate}" label="Data Fim"/>
+
+                <!-- Botão para salvar as alterações -->
+                <p:commandButton value="Salvar" action="#{eventBean.saveEditedEvent}" ajax="false"/>
+            </h:form>
+        </p:dialog>
+
+    </h:form>
+</h:body>
+</html>
