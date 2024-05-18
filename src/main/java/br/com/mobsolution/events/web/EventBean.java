@@ -69,9 +69,6 @@ public class EventBean implements Serializable {
         this.showParticipantsTab = false;
 
         this.today = new Date();
-        this.today.setHours(0);
-        this.today.setMinutes(0);
-        this.today.setSeconds(0);
         this.pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by("name").ascending());
         this.events = this.eventService.findAll(this.pageable);
     }
@@ -164,11 +161,6 @@ public class EventBean implements Serializable {
     }
     public String formatEventDuration(Event event) {
         return this.calculateDurationEvent(event) + " Dias";
-    }
-    public String getFormattedStartDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date startDate = this.backupEvent.getStartDate();
-        return sdf.format(startDate);
     }
     public boolean checkDateNewEventIsValid() {
         if (this.selectedEvent.getId() == null && this.selectedEvent.getStartDate().before(this.today)) {// verifica se é novo usario
