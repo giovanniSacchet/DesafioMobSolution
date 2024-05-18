@@ -170,12 +170,24 @@ public class EventBean implements Serializable {
         Date startDate = this.backupEvent.getStartDate();
         return sdf.format(startDate);
     }
-    public void saveEvent() {
-        // Falta validar campos data ao editar evento...
-        if (this.selectedEvent.getId() == null && this.selectedEvent.getStartDate().before(this.today)) {
-            System.out.println("fui");
+    public boolean checkDateNewEventIsValid() {
+        if (this.selectedEvent.getId() == null && this.selectedEvent.getStartDate().before(this.today)) {// verifica se é novo usario
+            this.selectedEvent.getStartDate().setHours(0);
+            this.selectedEvent.getStartDate().setMinutes(0);
+            this.selectedEvent.getStartDate().setSeconds(0);
+            this.selectedEvent.getStartDate().setTime(this.selectedEvent.getStartDate().getTime() / 1000 * 1000);
+
+            this.today.setHours(0);
+            this.today.setMinutes(0);
+            this.today.setSeconds(0);
+            this.today.setTime(this.today.getTime() / 1000 * 1000);
+
+            return this.selectedEvent.getStartDate().equals(this.today);
         }
-        if (this.selectedEvent.isValid() ) {
+        return true;
+    }
+    public void saveEvent() {
+        if (this.selectedEvent.isValid() && this.checkDateNewEventIsValid()) {
             this.showParticipantsTab = true;
             if (this.selectedEvent.getId() == null) {
                 this.participantsEvent = new ArrayList<>();
