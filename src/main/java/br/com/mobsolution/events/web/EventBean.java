@@ -7,7 +7,6 @@ import br.com.mobsolution.events.service.EventService;
 import br.com.mobsolution.events.service.ParticipantService;
 import br.com.mobsolution.events.service.PresenceService;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
