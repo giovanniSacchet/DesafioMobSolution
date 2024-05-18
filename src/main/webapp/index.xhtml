@@ -9,6 +9,7 @@
 </h:head>
 <h:body style="margin-left:50px; margin-right: 50px;">
 
+    <!-- Titulo da pagina e botao add Evento -->
     <div style="display: ruby;">
         <h1>EVENTOS</h1>
         <p:commandButton style="margin-left: 20px; background-color: green; border-color: green;"
@@ -23,16 +24,16 @@
         <p:panelGrid columns="7" style="width: 70%; margin: 1% 15% 2% 15%;" columnClasses="label, value">
             <f:facet name="header">Filtros</f:facet>
 
-            <h:outputLabel for="searchName" value="Nome:" style="font-weight: bold;"/>
+            <h:outputLabel for="searchName" value="Nome:" style="font-weight: bold;" />
             <p:inputText id="searchName" value="#{eventBean.searchEvent.name}" />
 
-            <h:outputLabel for="searchStartDate" value="Data Inicial:" style="font-weight: bold;"/>
+            <h:outputLabel for="searchStartDate" value="Data Inicial:" style="font-weight: bold;" />
             <p:calendar id="searchStartDate" value="#{eventBean.searchEvent.startDate}" />
 
-            <h:outputLabel for="searchEndDate" value="Data Final:" style="font-weight: bold;"/>
+            <h:outputLabel for="searchEndDate" value="Data Final:" style="font-weight: bold;" />
             <p:calendar id="searchEndDate" value="#{eventBean.searchEvent.endDate}" />
 
-            <p:commandButton value="Pesquisar" actionListener="#{eventBean.search()}" update=":eventTableForm:eventTable"/>
+            <p:commandButton value="Pesquisar" actionListener="#{eventBean.search()}" update=":eventTableForm:eventTable" />
         </p:panelGrid>
 
 
@@ -111,7 +112,7 @@
                                          size="60"
                                          required="true"
                                          requiredMessage="Nome do evento é obrigatório." />
-                            <h:message for="eventName" style="color: red;"/>
+                            <h:message for="eventName" style="color: red;" />
 
                             <h:outputLabel for="eventStartDate" value="Data de Início:" />
                             <p:calendar id="eventStartDate"
@@ -121,7 +122,7 @@
                                         showOn="button"
                                         readonlyInput="true"
                                         requiredMessage="Data de início do evento é obrigatória." />
-                            <h:message for="eventStartDate" style="color: red;"/>
+                            <h:message for="eventStartDate" style="color: red;" />
 
                             <h:outputLabel for="eventEndDate" value="Data de Fim:" />
                             <p:calendar id="eventEndDate"
@@ -131,7 +132,7 @@
                                         showOn="button"
                                         readonlyInput="true"
                                         requiredMessage="Data de fim do evento é obrigatória." />
-                            <h:message for="eventEndDate" style="color: red;"/>
+                            <h:message for="eventEndDate" style="color: red;" />
                         </h:panelGrid>
 
                         <p:commandButton value="Salvar"
@@ -194,14 +195,13 @@
         </h:form>
     </p:dialog>
 
-
     <!-- Modal para adicionar presença do participante -->
     <p:dialog header="Adicionar Presença" widgetVar="addModalParticipantPresence" modal="true" resizable="false" width="550" height="260">
         <h:form id="addPresenceForm">
 
             <h:panelGrid rows="2">
-                <h:outputText style="font-weight: 600; font-size: 20px;" value="Nome: #{eventBean.selectedParticipant.name}"/>
-                <h:outputText style="font-weight: 600; font-size: 20px;" value="CPF: #{eventBean.selectedParticipant.cpf}"/>
+                <h:outputText style="font-weight: 600; font-size: 20px;" value="Nome: #{eventBean.selectedParticipant.name}" />
+                <h:outputText style="font-weight: 600; font-size: 20px;" value="CPF: #{eventBean.selectedParticipant.cpf}" />
                 <h:panelGrid rows="3" style="margin-top: 20px;">
                     <h:outputLabel for="newPresenceDate" value="Data: *" />
                     <p:calendar id="newPresenceDate"
@@ -213,7 +213,7 @@
                                 showOn="button"
                                 readonlyInput="true"
                                 requiredMessage="Data da presença é obrigatória." />
-                    <h:message for="newPresenceDate" style="color: red;"/>
+                    <h:message for="newPresenceDate" style="color: red;" />
                 </h:panelGrid>
             </h:panelGrid>
 
@@ -225,8 +225,6 @@
         </h:form>
     </p:dialog>
 
-
-
     <!-- Modal de detalhes do participante -->
     <p:dialog header="Detalhes do Participante" widgetVar="participantDetailsDialog" modal="true" resizable="false" width="600" height="400">
         <h:form id="detailsParticipantForm">
@@ -234,15 +232,15 @@
             <h:panelGrid rows="3">
                 <h:outputLabel for="editParticipantName" value="Nome:" />
                 <p:inputText id="editParticipantName" value="#{eventBean.selectedParticipant.name}" size="50" required="true" requiredMessage="Nome do participante é obrigatório." />
-                <h:message for="editParticipantName" style="color: red;"/>
+                <h:message for="editParticipantName" style="color: red;" />
 
                 <h:outputLabel for="editParticipantCpf" value="CPF:" />
                 <p:inputMask id="editParticipantCpf" value="#{eventBean.selectedParticipant.cpf}" mask="999.999.999-99" size="50" required="true" requiredMessage="CPF do participante é obrigatório." />
-                <h:message for="editParticipantCpf" style="color: red;"/>
+                <h:message for="editParticipantCpf" style="color: red;" />
 
                 <h:outputLabel for="editParticipantEmail" value="E-mail:" />
                 <p:inputText id="editParticipantEmail" value="#{eventBean.selectedParticipant.email}" size="50" required="true" requiredMessage="E-mail do participante é obrigatório." />
-                <h:message for="editParticipantEmail" style="color: red;"/>
+                <h:message for="editParticipantEmail" style="color: red;" />
             </h:panelGrid>
 
             <p:commandButton value="Salvar"
@@ -260,15 +258,15 @@
             <h:panelGrid rows="2">
                 <h:outputLabel for="saveParticipantName" value="Nome: *" />
                 <p:inputText id="saveParticipantName" value="#{eventBean.newParticipant.name}" size="50" required="true" requiredMessage="Nome do participante é obrigatório." />
-                <h:message for="saveParticipantName" style="color: red;"/>
+                <h:message for="saveParticipantName" style="color: red;" />
 
                 <h:outputLabel for="saveParticipantCpf" value="CPF: *" />
                 <p:inputMask id="saveParticipantCpf" value="#{eventBean.newParticipant.cpf}" mask="999.999.999-99" size="50" required="true" requiredMessage="CPF do participante é obrigatório." />
-                <h:message for="saveParticipantCpf" style="color: red;"/>
+                <h:message for="saveParticipantCpf" style="color: red;" />
 
                 <h:outputLabel for="saveParticipantEmail" value="E-mail: *" />
                 <p:inputText id="saveParticipantEmail" value="#{eventBean.newParticipant.email}" size="50" required="true" requiredMessage="E-mail do participante é obrigatório." />
-                <h:message for="saveParticipantEmail" style="color: red;"/>
+                <h:message for="saveParticipantEmail" style="color: red;" />
             </h:panelGrid>
 
             <p:commandButton value="Salvar"
@@ -282,7 +280,9 @@
     <!-- Modal de mensagens do servidor -->
     <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
 
+    <!-- Botão para resetar a pagina quando dar reload -->
     <p:commandButton id="hiddenButton" style="display:none;" action="#{eventBean.init()}" />
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("hiddenButton").click();
