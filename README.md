@@ -1,4 +1,4 @@
-# Nome do Projeto
+# Desafio MobSolution
 
 Projeto feito como desafio técnico para empresa MobSolution utilizando as tecnologias Java 11, Spring boot, JSF, PrimeFaces e Hibernate.
 
